@@ -1727,16 +1727,32 @@ static const char *options4[] = {"Top Sever | Vàng",
   BBoneLogV2.frame = button.frame;
 }
 ////Map
-void (*_LActorRoot_Visible)(void *instance, int camp, bool bVisible,
-                            const bool forceSync);
-void LActorRoot_Visible(void *instance, int camp, bool bVisible,
-                        const bool forceSync = false) {
-  if (instance != nullptr && MapHack) {
-    if (camp == 1 || camp == 2 || camp == 110 || camp == 255) {
-      bVisible = true;
+bool (*_LActorRoot_Visible)(
+    void *instance,
+    int camp,
+    bool bVisible,
+    bool forceSync
+);
+
+bool LActorRoot_Visible(
+    void *instance,
+    int camp,
+    bool bVisible,
+    bool forceSync = false
+)
+{
+    if (instance != NULL && HackMap)
+    {
+        if (camp == 1 || camp == 2 ||
+            camp == 110 || camp == 255)
+        {
+            bVisible = true;
+        }
     }
-  }
-  return _LActorRoot_Visible(instance, camp, bVisible, forceSync);
+
+    return _LActorRoot_Visible(
+        instance, camp, bVisible, forceSync
+    );
 }
 ////unti
 bool ShowInfHero;
