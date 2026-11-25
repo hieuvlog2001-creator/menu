@@ -5,7 +5,6 @@
 // ▐▛▚▖ ▐▛▀▜▌▐▛▀▜▌  █       ▐▛▀▚▖▐▛▀▜▌▐▌ ▐▌
 // ▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌▗▄█▄▖     ▐▙▄▞▘▐▌ ▐▌▝▚▄▞▘
 // KHAI BAO
-static bool hackmap
 int (*ValueLinkerComponent_get_actorHp)(void *instance);
 int (*ValueLinkerComponent_get_actorHpTotal)(void *instance);
 int (*ValueLinkerComponent_get_actorSoulLevel)(void *instance);
@@ -1741,7 +1740,7 @@ bool LActorRoot_Visible(
     bool forceSync = false
 )
 {
-    if (instance != NULL && HackMap)
+    if (instance != NULL && MapHack)
     {
         if (camp == 1 || camp == 2 ||
             camp == 110 || camp == 255)
