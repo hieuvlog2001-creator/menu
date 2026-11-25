@@ -5,7 +5,7 @@
 // ▐▛▚▖ ▐▛▀▜▌▐▛▀▜▌  █       ▐▛▀▚▖▐▛▀▜▌▐▌ ▐▌
 // ▐▌ ▐▌▐▌ ▐▌▐▌ ▐▌▗▄█▄▖     ▐▙▄▞▘▐▌ ▐▌▝▚▄▞▘
 // KHAI BAO
-
+static bool hackmap
 int (*ValueLinkerComponent_get_actorHp)(void *instance);
 int (*ValueLinkerComponent_get_actorHpTotal)(void *instance);
 int (*ValueLinkerComponent_get_actorSoulLevel)(void *instance);
