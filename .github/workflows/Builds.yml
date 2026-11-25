@@ -1,0 +1,37 @@
+name: Build Theos Project
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          brew install ldid xz
+
+      - name: Install Theos
+        run: |
+          git clone --recursive https://github.com/theos/theos.git ~/theos
+          echo "THEOS=~/theos" >> $GITHUB_ENV
+          
+      - name: Download iOS SDK
+        run: |
+          rm -rf ~/theos/sdks
+          git clone https://github.com/theos/sdks.git ~/theos/sdks
+          
+      - name: Build Project (Make)
+        run: |
+          make FINALPACKAGE=1
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TruongMods_Framework
+          path: .theos/obj/ # Toàn bộ file dylib/framework build xong sẽ nằm trong thư mục ẩn này
