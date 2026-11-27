@@ -1,5 +1,7 @@
 
 #include "Includes.h"
+#include <mutex>
+#import <QuartzCore/QuartzCore.h>
 #import "KittyMemory/Icon.h"
 #import "KittyMemory/bdvt.h"
 #include "KittyMemory/imgui_demo.h"
@@ -1098,6 +1100,16 @@ bool Checkbox(bool &funcFlag, const char *funcLabel, const char *funcDescription
       } else if (Settings::Tab == 3) {
         // AUTOPLAY
         ImGui::Spacing();
+        {
+        std::lock_guard<std::recursive_mutex> floLock(FloMutex);
+        iOSToggle(mua, "Múa Flo", "Florentino - di chuyển và kỹ năng", self.italic, "t_muaflo");
+        if (mua) {
+          const char* modes[] = {"Chiêu 1", "Chiêu 3"};
+          ImGui::Combo("Chế độ Flo##mode", &FloMode, modes, 2);
+          iOSToggle(HoaPos, "Hiện hoa", "Đánh dấu vị trí hoa", self.italic, "t_hoapos");
+          FloDiagnostics();
+        }
+        }
         iOSToggle(macrotudong,   "Macro Tự Động", "Đánh liên hoàn tự động",              self.italic, "t_macro");
         iOSToggle(AutoBocPha,    "Auto Bộc Phá",  "Tự động dùng bộc phá",                self.italic, "t_bocpha");
         iOSToggle(AutoTrungTri,  "Auto Trừng Trị","Tự động trừng trị quái",              self.italic, "t_trungtri");
@@ -1281,6 +1293,7 @@ bool Checkbox(bool &funcFlag, const char *funcLabel, const char *funcDescription
 
     ImDrawList *draw_list = ImGui::GetBackgroundDrawList();
     DrawESP(draw_list);
+    FloDraw(draw_list);
     if (ESPEnable) {
       if (ESPCount && ESPEnable) {
         ImU32 backgroundColor = (aiCount == 0 && playerCount == 0) ? IM_COL32(0, 255, 0, 150) : IM_COL32(255, 0, 0, 150);

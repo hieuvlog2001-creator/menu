@@ -71,6 +71,7 @@ void hook1() {
       WorldToScreens = (Vector3(*)(void *, Vector3, int))GET_OFFSET(("UnityEngine.CoreModule.dll"), ("UnityEngine"), ("Camera"), ("WorldToViewportPoint"), 2);
       LActorRoot_get_PlayerMovement = (void *(*)(void *))GET_OFFSET("Project.Plugins_d.dll", "NucleusDrive.Logic", "LActorRoot", "get_PlayerMovement", 0);
       get_speed = (int (*)(void *))GET_OFFSET("Project.Plugins_d.dll", "NucleusDrive.Logic", "PlayerMovement", "get_speed", 0);
+      FloInit();
       // 2. Khai báo Offset cục bộ (Local Hook Offsets)
       uint64_t OnClickSelectHeroSkinOffset = GET_OFFSET("Project_d.dll", "Assets.Scripts.GameSystem", "HeroSelectNormalWindow", "OnClickSelectHeroSkin", 2);
       uint64_t IsCanUseSkinOffset = GET_OFFSET("Project_d.dll", "Assets.Scripts.GameSystem", "CRoleInfo", "IsCanUseSkin", 2);

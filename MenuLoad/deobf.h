@@ -596,7 +596,8 @@ bool find_method_tok(const file_buffer_t *meta,
                        const char *type_name,
                        const char *method_name,
                        int argsCount, // Thêm tham số argsCount
-                       uint32_t *out_method_token) {
+                       uint32_t *out_method_token, const char *firstParam = nullptr,
+                       const char *secondParam = nullptr) {
     if (!meta || !hdr || !image_name || !type_name || !method_name || !out_method_token) {
         return false;
     }
@@ -642,6 +643,18 @@ bool find_method_tok(const file_buffer_t *meta,
                 const char *mn = metadata_string(meta, hdr, methods[m].nameIndex);
                 // Kiểm tra đồng thời Tên hàm và Số lượng tham số (argsCount)
                 if (mn && strcmp(mn, method_name) == 0 && methods[m].parameterCount == argsCount) {
+                    if (firstParam || secondParam) {
+                        // Metadata v29 parameter records: nameIndex, token, typeIndex.
+                        const uint64_t off = hdr[22], size = hdr[23];
+                        const int start = methods[m].parameterStart;
+                        if (start < 0 || argsCount != 2 || size % 12 ||
+                            off + size > meta->size || (uint64_t(start) + 2) * 12 > size) continue;
+                        const uint32_t *params = (const uint32_t *)(meta->data + off + uint64_t(start) * 12);
+                        const char *a = metadata_string(meta, hdr, params[0]);
+                        const char *b = metadata_string(meta, hdr, params[3]);
+                        if ((firstParam && (!a || strcmp(a, firstParam))) ||
+                            (secondParam && (!b || strcmp(b, secondParam)))) continue;
+                    }
                     *out_method_token = methods[m].token;
                     return true;
                 }
@@ -1044,12 +1057,12 @@ int FindFieldOffset(const char *image_name,
 } 
 class IL2CPP_Bridge {
 public:
-    static uintptr_t NewGetMethod(const char* img, const char* ns, const char* clz, const char* mth, int args) {
-        if (!Metadata::is_metadata_initialized) Metadata::InitializeSystem();
+    static uintptr_t NewGetMethod(const char* img, const char* ns, const char* clz, const char* mth, int args, const char* firstParam = nullptr, const char* secondParam = nullptr) {
+        if (!Metadata::is_metadata_initialized && !Metadata::InitializeSystem()) return 0;
 
         uint32_t token = 0;
         // Sử dụng global_cache thay vì khởi tạo mới bên trong FindMethodOffset
-        if (Metadata::find_method_tok(&Metadata::global_cache.meta, Metadata::global_cache.hdr, img, ns, clz, mth, args, &token)) {
+        if (Metadata::find_method_tok(&Metadata::global_cache.meta, Metadata::global_cache.hdr, img, ns, clz, mth, args, &token, firstParam, secondParam)) {
             uint64_t method_va = 0;
             if (Metadata::get_method_ptr(&Metadata::global_cache.unity, &Metadata::global_cache.data_secs, &Metadata::global_cache.exec_secs,
                                         Metadata::global_cache.code_reg_va, img, token, &method_va)) {
