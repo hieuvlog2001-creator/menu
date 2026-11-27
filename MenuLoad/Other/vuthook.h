@@ -327,17 +327,21 @@ Vector3 GetUseSkillDirection(void *instance, bool isTouchUse) {
   return _GetUseSkillDirection(instance, isTouchUse);
 }
 
+#include "FloDance.h"
+
 void (*_SkillButtonManager_LateUpdate)(void *instance);
 void SkillButtonManager_LateUpdate(void *instance) {
   if (instance != NULL)
     SkillSlot = GetCurSkillSlotType(instance);
-  return _SkillButtonManager_LateUpdate(instance);
+  if (_SkillButtonManager_LateUpdate) _SkillButtonManager_LateUpdate(instance);
+  FloUseSkills(instance);
 }
 
 // esp
 void (*old_ActorLinker_ActorDestroy)(void *instance);
 void ActorLinker_ActorDestroy(void *instance) {
   if (instance != NULL) {
+    FloForget(instance);
     old_ActorLinker_ActorDestroy(instance);
     ActorLinker_enemy->removeEnemyGivenObject(instance);
     if (espManager->MyPlayer == instance) {
@@ -397,6 +401,7 @@ void ActorLinker_Update(void *instance) {
                 }
         }
     old_ActorLinker_Update(instance);
+    FloObserve(instance);
     if (myActorLinker != nullptr) {
       int myTeam = ActorLinker_COM_PLAYERCAMP(myActorLinker);
       if(AutoWin){
